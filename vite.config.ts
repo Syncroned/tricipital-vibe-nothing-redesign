@@ -17,7 +17,7 @@ export default defineConfig({
       userscript: {
         name: 'Tricipital Vibe Nothing Redesign',
         namespace: 'https://tricipital.com',
-        version: '0.1.30',
+        version: '0.1.32',
         description: 'A Nothing-inspired full UI redesign for tricipital.com',
         author: 'You',
         match: ['*://tricipital.com/*', '*://www.tricipital.com/*'],
