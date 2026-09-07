@@ -361,6 +361,9 @@ body.appwrap .tr-action {
   -webkit-appearance: none !important;
   outline: 0 !important;
   cursor: pointer !important;
+  pointer-events: auto !important;
+  clip: auto !important;
+  overflow: visible !important;
   z-index: 1;
 }
 
