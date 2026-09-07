@@ -1,0 +1,38 @@
+name: Build and release userscript
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Extract userscript version
+        id: version
+        run: |
+          VERSION=$(grep -oP "version: '\K[^']+" vite.config.ts)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          TAG="v$VERSION"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload --clobber "$TAG" dist/tricipital-redesign.user.js
+          else
+            gh release create "$TAG" dist/tricipital-redesign.user.js --title "$TAG" --generate-notes
+          fi
