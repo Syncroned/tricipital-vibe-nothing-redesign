@@ -1,0 +1,350 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tricipital redesign: layout helpers that don't conflict with Nothing UI */
+
+/* The Nothing UI tokens are scoped to .appwrap; we keep it but zero the uneven showcase padding. */
+body.appwrap {
+  padding: 0 !important;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Replace the CSS dot field with the WebGL shader background */
+body::before {
+  display: none !important;
+}
+
+/* Smooth dark/light mode transitions for theme tokens */
+body.appwrap,
+body.appwrap *,
+body.appwrap *::before,
+body.appwrap *::after {
+  transition: background-color 0.4s var(--ease, ease),
+              color 0.4s var(--ease, ease),
+              border-color 0.4s var(--ease, ease),
+              fill 0.4s var(--ease, ease),
+              stroke 0.4s var(--ease, ease);
+}
+
+/* Uniform action pills in the header */
+.tr-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 32px;
+}
+
+/* Brand: logo + wordmark with the uniform 12px element gap */
+.tr-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tr-logo {
+  height: 28px;
+  width: 28px;
+  flex-shrink: 0;
+  filter: brightness(1.5);
+  transition: filter 0.4s var(--ease, ease);
+}
+
+/* Logo artwork is light dots — invert for light mode like the shader background */
+[data-theme="light"] .tr-logo {
+  filter: brightness(1.5) invert(1);
+}
+
+.tr-header .tr-actions {
+  justify-self: end;
+}
+
+.tr-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tr-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--primary);
+  background: var(--surface);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+button.tr-action {
+  cursor: pointer;
+  background: transparent;
+}
+
+button.tr-action:hover {
+  border-color: var(--primary);
+}
+
+/* Larger, more readable text */
+body.appwrap .label,
+body.appwrap .mhead .ex {
+  font-size: 12px;
+}
+
+body.appwrap .mhead .t {
+  font-size: 13px;
+}
+
+body.appwrap .mhead .no {
+  font-size: 14px;
+}
+
+body.appwrap .btn {
+  font-size: 13px;
+}
+
+body.appwrap .inp {
+  font-size: 14px;
+}
+
+body.appwrap .chip {
+  font-size: 12px;
+}
+
+body.appwrap .tag {
+  font-size: 12px;
+}
+
+body.appwrap .pill {
+  font-size: 11px;
+}
+
+body.appwrap .tabs button {
+  font-size: 13px;
+  padding-bottom: 12px;
+}
+
+body.appwrap table th {
+  font-size: 12px;
+}
+
+body.appwrap table td {
+  font-size: 14px;
+}
+
+body.appwrap .card .ttl {
+  font-size: 22px;
+}
+
+body.appwrap h4.sub {
+  font-size: 12px;
+}
+
+body.appwrap .tr-action {
+  font-size: 12px;
+}
+
+[data-theme="light"] body.appwrap {
+  --bg: #F2F2F2;
+  --surface: #FAFAFA;
+  --raised: #FFFFFF;
+  --line: #E0E0E0;
+  --line-2: #CFCFCF;
+  --muted: #8C8C8C;
+  --secondary: #5A5A5A;
+  --primary: #1C1C1C;
+  --display: #000000;
+  --glass: rgba(255, 255, 255, 0.9);
+  --glass-brd: rgba(0, 0, 0, 0.08);
+}
+
+#tr-redesign-root {
+  min-height: 100vh;
+}
+
+/* Equal 32px spacing tokens everywhere */
+.tr-main {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 32px;
+  box-sizing: border-box;
+  transform: scale(1.05);
+  transform-origin: top center;
+}
+
+.tr-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.poster {
+  gap: 32px !important;
+}
+
+.mod {
+  padding: 32px !important;
+}
+
+.mhead {
+  margin-bottom: 32px !important;
+}
+
+.field {
+  margin-bottom: 32px !important;
+}
+
+.card {
+  padding: 32px !important;
+}
+
+.row {
+  gap: 12px !important;
+}
+
+/* Tabs using buttons instead of spans */
+.tabs button {
+  all: unset;
+  display: inline-block;
+  padding-bottom: 9px;
+  color: var(--muted);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.2s var(--ease, ease), border-color 0.2s var(--ease, ease);
+}
+.tabs button.on {
+  color: var(--primary);
+  border-color: var(--display);
+}
+
+/* Hide default checkboxes for custom switch / checkbox */
+.switch input,
+.cbx input {
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  appearance: none !important;
+  -moz-appearance: none !important;
+  -webkit-appearance: none !important;
+  outline: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+/* Dot-leader rows (Queue Status) */
+.dot-leader {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  gap: 0;
+}
+
+.dot-leader .label,
+.dot-leader .value {
+  flex-shrink: 0;
+}
+
+.dot-leader .dots {
+  flex: 1;
+  min-width: 16px;
+  height: 0.55em;
+  border-bottom: 1px dotted var(--line-2);
+  margin: 0 12px;
+}
+
+.dot-leader .value {
+  text-align: right;
+}
+
+/* Red accent everywhere */
+body.appwrap .btn-primary {
+  background: var(--accent) !important;
+  color: var(--accent-ink) !important;
+}
+
+body.appwrap .btn-primary:hover {
+  opacity: 0.85;
+}
+
+body.appwrap .btn-outline:hover,
+body.appwrap button.tr-action:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent-text) !important;
+}
+
+#tr-redesign-root .chip {
+  justify-content: center !important;
+  padding: 5px 11px !important;
+  background: var(--line-2) !important;
+}
+
+#tr-redesign-root .chip.on {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #000000 !important;
+}
+
+#tr-redesign-root .chip.on:hover {
+  opacity: 0.85;
+}
+
+body.appwrap .box.on {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent-ink) !important;
+}
+
+body.appwrap .switch.on {
+  background: var(--accent) !important;
+}
+
+body.appwrap .switch.on::after {
+  background: var(--accent-ink) !important;
+}
+
+body.appwrap .tabs button.on {
+  color: var(--accent-text) !important;
+  border-color: var(--accent) !important;
+}
+
+body.appwrap .inp:focus,
+body.appwrap .inp.focused {
+  border-color: var(--accent) !important;
+}
+
+body.appwrap .cbx {
+  margin-bottom: 0 !important;
+}
+
+/* Loading spinner while the Nothing UI CSS/fonts load */
+.tr-redesign-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background: var(--bg);
+  color: var(--primary);
+  font-family: var(--f-mono);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
