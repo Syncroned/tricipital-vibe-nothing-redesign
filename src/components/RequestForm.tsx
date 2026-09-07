@@ -112,7 +112,13 @@ export function RequestForm() {
           <li>3. Don’t come into chat only to ask about a specific level.</li>
           <li>4. Respect the streamer’s free will.</li>
           <li className="cbx" style={{ cursor: 'pointer' }}>
-            <span className={cn('box', rules && 'on')}>{rules && <DotIcon name="check" size={12} />}</span>
+            <span className={cn('box', rules && 'on')}>
+              {rules && (
+                <svg width={12} height={12} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 8.5l3.5 3.5 6.5-7" />
+                </svg>
+              )}
+            </span>
             <input
               type="checkbox"
               className="tw-sr-only"
