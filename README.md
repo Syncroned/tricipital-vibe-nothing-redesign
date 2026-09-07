@@ -6,7 +6,7 @@ A full Tampermonkey userscript that replaces tricipital.com with a **Nothing-ins
 - **React 19 + TypeScript**
 - **Tailwind CSS 3** (prefixed `tw-`, preflight disabled to avoid clashing with the design system)
 - **vite-plugin-monkey** for userscript bundling
-- **Vibe-Nothing-UI-Design** loaded from CDN
+- **Vibe-Nothing-UI-Design** by [wangbh030722](https://github.com/wangbh030722/vibe-nothing-ui-design) loaded from CDN
 - **Nothing fonts** from [xeji01/nothingfont](https://github.com/xeji01/nothingfont):
   - `Ndot57-Regular` for display / big text
   - `NType82-Regular` for body/UI
