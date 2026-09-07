@@ -180,6 +180,101 @@ body.appwrap .tr-action {
   transform-origin: top center;
 }
 
+.tr-view-enter .mod,
+.tr-view-exit .mod {
+  animation: tr-fade-up 0.25s var(--ease, ease) both;
+  animation-delay: calc(var(--p, 0) * 0.05s);
+}
+
+.tr-view-exit .mod {
+  animation-name: tr-fade-out;
+  animation-duration: 0.15s;
+}
+
+.tr-view-enter .mod > *,
+.tr-view-exit .mod > * {
+  animation: tr-fade-up 0.2s var(--ease, ease) both;
+  animation-delay: calc(var(--p, 0) * 0.05s + var(--l, 0) * 0.02s);
+}
+
+.tr-view-exit .mod > * {
+  animation-name: tr-fade-out;
+  animation-duration: 0.12s;
+}
+
+.tr-view-enter .mod > .tw-grid,
+.tr-view-exit .mod > .tw-grid {
+  animation: none;
+}
+
+.tr-view-enter .card,
+.tr-view-exit .card {
+  animation: tr-fade-up 0.2s var(--ease, ease) both;
+  animation-delay: calc(var(--p, 0) * 0.05s + var(--c, 0) * 0.02s);
+}
+
+.tr-view-exit .card {
+  animation-name: tr-fade-out;
+  animation-duration: 0.12s;
+}
+
+.tr-view > *:nth-child(1) { --p: 0; }
+.tr-view > *:nth-child(2) { --p: 1; }
+.tr-view > *:nth-child(3) { --p: 2; }
+.tr-view > *:nth-child(4) { --p: 3; }
+.tr-view > *:nth-child(5) { --p: 4; }
+.tr-view > *:nth-child(6) { --p: 5; }
+.tr-view > *:nth-child(7) { --p: 6; }
+.tr-view > *:nth-child(8) { --p: 7; }
+
+.tr-view .mod > *:nth-child(1) { --l: 0; }
+.tr-view .mod > *:nth-child(2) { --l: 1; }
+.tr-view .mod > *:nth-child(3) { --l: 2; }
+.tr-view .mod > *:nth-child(4) { --l: 3; }
+.tr-view .mod > *:nth-child(5) { --l: 4; }
+.tr-view .mod > *:nth-child(6) { --l: 5; }
+.tr-view .mod > *:nth-child(7) { --l: 6; }
+.tr-view .mod > *:nth-child(8) { --l: 7; }
+
+.tr-view .card:nth-child(1) { --c: 0; }
+.tr-view .card:nth-child(2) { --c: 1; }
+.tr-view .card:nth-child(3) { --c: 2; }
+.tr-view .card:nth-child(4) { --c: 3; }
+.tr-view .card:nth-child(5) { --c: 4; }
+.tr-view .card:nth-child(6) { --c: 5; }
+.tr-view .card:nth-child(7) { --c: 6; }
+.tr-view .card:nth-child(8) { --c: 7; }
+
+@keyframes tr-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tr-fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.tr-loading span,
+.tr-loading .gico {
+  animation: tr-fade-up 0.25s var(--ease, ease) both;
+}
+
+.tr-loading .gico { animation-delay: 0s; }
+.tr-loading span { animation-delay: 0.08s; }
+
 .tr-nav {
   display: flex;
   flex-direction: column;
@@ -294,6 +389,7 @@ body.appwrap button.tr-action:hover {
   justify-content: center !important;
   padding: 5px 11px !important;
   background: var(--line-2) !important;
+  transition-duration: 0.1s !important;
 }
 
 #tr-redesign-root .chip.on {
