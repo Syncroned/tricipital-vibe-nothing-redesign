@@ -21,6 +21,14 @@ A full Tampermonkey userscript that replaces tricipital.com with a **Nothing-ins
 3. Tampermonkey will detect it — click **Install**.
 4. Visit `https://tricipital.com/` or `https://www.tricipital.com/`.
 
+## Screenshots
+
+![Dark mode](public/showcases/darkmode.png)
+
+![Light mode](public/showcases/lightmode.png)
+
+yes ik light mode is an eyesore dawg
+
 ## Development
 
 ```bash
