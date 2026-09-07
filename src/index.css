@@ -429,6 +429,19 @@ body.appwrap button.tr-action:hover {
   transition-duration: 0.1s !important;
 }
 
+#tr-redesign-root .rule {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+#tr-redesign-root .rule-no {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  min-width: 18px !important;
+}
+
 body.appwrap .box.on {
   background: var(--accent) !important;
   border-color: var(--accent) !important;
