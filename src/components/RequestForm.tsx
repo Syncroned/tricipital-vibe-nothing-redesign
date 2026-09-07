@@ -114,8 +114,8 @@ export function RequestForm() {
           <li className="cbx" style={{ cursor: 'pointer' }}>
             <span className={cn('box', rules && 'on')}>
               {rules && (
-                <svg width={12} height={12} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 8.5l3.5 3.5 6.5-7" />
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 12l5 5L20 6" />
                 </svg>
               )}
             </span>

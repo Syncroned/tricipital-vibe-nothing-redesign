@@ -425,6 +425,10 @@ body.appwrap button.tr-action:hover {
   opacity: 0.85;
 }
 
+#tr-redesign-root .box {
+  transition-duration: 0.1s !important;
+}
+
 body.appwrap .box.on {
   background: var(--accent) !important;
   border-color: var(--accent) !important;
