@@ -430,16 +430,14 @@ body.appwrap button.tr-action:hover {
 }
 
 #tr-redesign-root .rule {
-  display: flex !important;
+  display: grid !important;
+  grid-template-columns: 18px 1fr;
+  gap: 9px !important;
   align-items: center !important;
-  gap: 4px !important;
 }
 
 #tr-redesign-root .rule-no {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  min-width: 18px !important;
+  text-align: left !important;
 }
 
 body.appwrap .box.on {
