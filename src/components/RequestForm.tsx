@@ -107,19 +107,17 @@ export function RequestForm() {
           <span className="t">How It Works</span>
         </div>
         <ul className="tw-list-none tw-space-y-2" style={{ color: 'var(--secondary)', fontSize: 14, lineHeight: 1.6 }}>
-          <li className="rule"><span className="rule-no">1.</span>Be respectful to all levels being played.</li>
-          <li className="rule"><span className="rule-no">2.</span>Don’t argue extensively about send decisions.</li>
-          <li className="rule"><span className="rule-no">3.</span>Don’t come into chat only to ask about a specific level.</li>
-          <li className="rule"><span className="rule-no">4.</span>Respect the streamer’s free will.</li>
+          <li className="rule"><span className="rule-no">1.</span><span className="rule-t">Be respectful to all levels being played.</span></li>
+          <li className="rule"><span className="rule-no">2.</span><span className="rule-t">Don’t argue extensively about send decisions.</span></li>
+          <li className="rule"><span className="rule-no">3.</span><span className="rule-t">Don’t come into chat only to ask about a specific level.</span></li>
+          <li className="rule"><span className="rule-no">4.</span><span className="rule-t">Respect the streamer’s free will.</span></li>
           <li className="rule cbx" style={{ cursor: 'pointer' }}>
-            <span className="rule-no">
-              <span className={cn('box', rules && 'on')}>
-                {rules && (
-                  <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 12l5 5L20 6" />
-                  </svg>
-                )}
-              </span>
+            <span className={cn('box', rules && 'on')}>
+              {rules && (
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 12l5 5L20 6" />
+                </svg>
+              )}
             </span>
             <input
               type="checkbox"
