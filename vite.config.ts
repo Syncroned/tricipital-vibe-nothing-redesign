@@ -19,7 +19,7 @@ export default defineConfig({
         namespace: 'https://tricipital.com',
         version: '0.1.32',
         description: 'A Nothing-inspired full UI redesign for tricipital.com',
-        author: 'You',
+        author: 'SyncTM',
         match: ['*://tricipital.com/*', '*://www.tricipital.com/*'],
         'exclude-match': ['*://tricipital.com/api/*', '*://www.tricipital.com/api/*', '*://tricipital.com/assets/*', '*://www.tricipital.com/assets/*'],
         grant: 'none',
