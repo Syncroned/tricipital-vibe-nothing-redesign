@@ -432,12 +432,21 @@ body.appwrap button.tr-action:hover {
 #tr-redesign-root .rule {
   display: grid !important;
   grid-template-columns: 18px 1fr;
+  grid-template-areas: "box text";
   gap: 9px !important;
   align-items: center !important;
+  justify-items: start !important;
 }
 
-#tr-redesign-root .rule-no {
-  text-align: left !important;
+#tr-redesign-root .rule > .rule-no,
+#tr-redesign-root .rule > .box {
+  grid-area: box !important;
+  justify-self: start !important;
+}
+
+#tr-redesign-root .rule > .rule-t {
+  grid-area: text !important;
+  justify-self: start !important;
 }
 
 body.appwrap .box.on {
