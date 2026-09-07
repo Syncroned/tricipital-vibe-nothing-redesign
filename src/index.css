@@ -430,23 +430,27 @@ body.appwrap button.tr-action:hover {
 }
 
 #tr-redesign-root .rule {
-  display: grid !important;
-  grid-template-columns: 18px 1fr;
-  grid-template-areas: "box text";
-  gap: 9px !important;
-  align-items: center !important;
-  justify-items: start !important;
+  display: block !important;
+  overflow: hidden;
+  padding: 0 !important;
 }
 
-#tr-redesign-root .rule > .rule-no,
+#tr-redesign-root .rule > .rule-no {
+  float: left;
+  width: 18px;
+  margin-right: 9px;
+  text-align: left;
+  line-height: 1.6;
+}
+
 #tr-redesign-root .rule > .box {
-  grid-area: box !important;
-  justify-self: start !important;
+  float: left;
+  margin-right: 9px;
 }
 
 #tr-redesign-root .rule > .rule-t {
-  grid-area: text !important;
-  justify-self: start !important;
+  display: block;
+  overflow: hidden;
 }
 
 body.appwrap .box.on {
