@@ -4,6 +4,7 @@ import monkey from 'vite-plugin-monkey'
 
 // https://vite.dev/config/
 export default defineConfig({
+  publicDir: false,
   server: {
     proxy: {
       '/api': { target: 'https://www.tricipital.com', changeOrigin: true, secure: true },

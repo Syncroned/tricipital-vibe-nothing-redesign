@@ -61,11 +61,17 @@ export interface LeaderboardEntry {
   legendary_sends: string
   mythic_sends: string
   total_score: string
+  /** computed on the client */
+  sends?: number
+  /** computed on the client */
+  rank?: number
 }
+
+export type LeaderboardPeriod = 'all_time' | 'monthly' | 'weekly'
 
 export interface LeaderboardResponse {
   leaderboard: LeaderboardEntry[]
-  period: string
+  period: LeaderboardPeriod
   period_offset: number
   period_label: string
   is_current_period: boolean
@@ -115,7 +121,67 @@ export interface HighestWeightResponse {
 export interface ProgressResponse {
   weights: ProgressWeight[]
   milestones?: ProgressMilestone[]
-  score?: number
+  milestone?: ProgressMilestone
+  /** free-weight code items tied to a milestone */
+  milestone_weights?: MilestoneWeightItem[]
+  /** score totals, keyed by tier + total_score */
+  scores?: ProgressScore
+  /** outgoing weight transfer requests */
+  transfer_requests_outgoing?: TransferRequest[]
+  /** incoming weight transfer requests */
+  transfer_requests_incoming?: TransferRequest[]
+  /** orbs balance + redeemable tiers */
+  orbs_balance?: number
+  orbs_tiers?: OrbsTier[]
+  /** watch streak data */
+  watch_streak?: WatchStreak
+}
+
+export interface MilestoneWeightItem {
+  id: number
+  milestone_id: number
+  label?: string
+  amount: number | string
+  cooldown_days?: number
+  last_claimed_at?: string
+  can_claim?: boolean
+  next_claim_str?: string
+  has_active_code?: boolean
+  code?: string
+}
+
+export interface TransferRequest {
+  id: number
+  sender_username: string
+  recipient_username: string
+  sender_level_id: string
+  recipient_level_id: string
+  amount: number | string
+  status: 'pending' | 'accepted' | 'rejected' | 'cancelled'
+}
+
+export interface OrbsTier {
+  id: number
+  orb_cost: number | string
+  weight_award: number | string
+  label?: string
+}
+
+export interface WatchStreak {
+  streak: number
+  last_stream_at?: string
+  missed?: boolean
+  claimable?: boolean
+  claim_amount?: number
+}
+
+export interface ProgressScore {
+  total_score: number | string
+  rate_sends?: number | string
+  feature_sends?: number | string
+  epic_sends?: number | string
+  legendary_sends?: number | string
+  mythic_sends?: number | string
 }
 
 export interface ProgressWeight {
@@ -127,7 +193,12 @@ export interface ProgressWeight {
 
 export interface WeightHistoryEntry {
   delta: number
-  reason: string
+  /** legacy / friendly reason text */
+  reason?: string
+  /** original event type from the API */
+  event_type?: string
+  /** extra detail (code, orb tier, etc) */
+  detail?: string
   created_at: string
 }
 

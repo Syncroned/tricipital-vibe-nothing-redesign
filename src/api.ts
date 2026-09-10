@@ -39,7 +39,7 @@ export class TricipitalApi {
       opts.headers = { ...opts.headers, 'Content-Type': 'application/json' }
       opts.body = JSON.stringify(body)
     }
-    const res = await fetch(`${API_BASE}?action=${encodeURIComponent(action)}${bust}`, opts)
+    const res = await fetch(`${API_BASE}?action=${action}${bust}`, opts)
     const data = (await parseJson(res)) as Record<string, unknown>
 
     if (res.status === 403 && action !== 'csrf') {
@@ -107,6 +107,36 @@ export class TricipitalApi {
 
   adminLogin(password: string): Promise<unknown> {
     return this.api('login', 'POST', { csrf_token: this.csrf, password })
+  }
+
+  createTransferRequest(body: {
+    recipient_username: string
+    recipient_level_id: string
+    sender_level_id: string
+    amount: number | string
+  }): Promise<SubmitResponse> {
+    return this.api('create_transfer_request', 'POST', { csrf_token: this.csrf, ...body }) as Promise<SubmitResponse>
+  }
+
+  createWeightCode(body: {
+    level_id: string
+    amount: number | string
+    public?: boolean
+    custom_code?: string
+  }): Promise<{ success?: boolean; error?: string; code?: string; weight_award?: number | string; new_weight?: number | string }> {
+    return this.api('create_weight_code', 'POST', { csrf_token: this.csrf, ...body }) as Promise<{ success?: boolean; error?: string; code?: string; weight_award?: number | string; new_weight?: number | string }>
+  }
+
+  deleteMyWeight(levelId: string): Promise<SubmitResponse> {
+    return this.api('delete_my_weight', 'POST', { csrf_token: this.csrf, level_id: levelId }) as Promise<SubmitResponse>
+  }
+
+  cancelTransferRequest(id: number): Promise<SubmitResponse> {
+    return this.api('cancel_transfer_request', 'POST', { csrf_token: this.csrf, id }) as Promise<SubmitResponse>
+  }
+
+  respondTransferRequest(id: number, accept: boolean): Promise<SubmitResponse> {
+    return this.api('respond_transfer_request', 'POST', { csrf_token: this.csrf, id, accept }) as Promise<SubmitResponse>
   }
 }
 

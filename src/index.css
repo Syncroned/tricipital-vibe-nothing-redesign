@@ -7,8 +7,25 @@
 /* The Nothing UI tokens are scoped to .appwrap; we keep it but zero the uneven showcase padding. */
 body.appwrap {
   padding: 0 !important;
+  font-family: var(--f-ui);
+  color: var(--primary);
   font-size: 14px;
   line-height: 1.6;
+}
+
+body.appwrap input,
+body.appwrap textarea,
+body.appwrap select,
+body.appwrap button {
+  font-family: var(--f-ui);
+}
+
+#tr-redesign-root .fdisplay {
+  font-family: var(--f-display) !important;
+}
+
+#tr-redesign-root .mono {
+  font-family: var(--f-mono) !important;
 }
 
 /* Replace the CSS dot field with the WebGL shader background */
@@ -427,6 +444,36 @@ body.appwrap button.tr-action:hover {
 
 #tr-redesign-root .box {
   transition-duration: 0.1s !important;
+}
+
+/* Leaderboard rows — frosted glass, no gradients */
+body.appwrap .leaderboard-row {
+  padding: 12px 16px;
+  background: var(--glass);
+  border: 1px solid var(--glass-brd);
+  border-radius: var(--r-md);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  transition: transform 0.2s var(--ease, ease), border-color 0.2s var(--ease, ease);
+}
+
+body.appwrap .leaderboard-row:hover {
+  transform: translateY(-2px);
+}
+
+body.appwrap .leaderboard-row,
+#tr-redesign-root .inp,
+#tr-redesign-root .btn,
+#tr-redesign-root .btn-outline {
+  transition-duration: 0.1s !important;
+}
+
+body.appwrap .leaderboard-row.is-me {
+  border-color: var(--primary);
+}
+
+.mono {
+  font-family: var(--f-mono);
 }
 
 #tr-redesign-root .rule {

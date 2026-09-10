@@ -5,6 +5,7 @@ import type {
   RequestsStatus,
   HistoryResponse,
   LeaderboardResponse,
+  LeaderboardPeriod,
   QueueResponse,
   MyRequestResponse,
   HighestWeightResponse,
@@ -23,6 +24,8 @@ interface AppState {
   status: RequestsStatus | null
   history: HistoryResponse | null
   leaderboard: LeaderboardResponse | null
+  leaderboardPeriod: LeaderboardPeriod
+  leaderboardOffset: number
   queue: QueueResponse | null
   myRequest: MyRequestResponse | null
   highest: HighestWeightResponse | null
@@ -32,6 +35,8 @@ interface AppState {
   alert: Alert | null
   activeTab: string
   setActiveTab: (tab: string) => void
+  setLeaderboardPeriod: (period: LeaderboardPeriod) => void
+  shiftLeaderboardPeriod: (delta: number) => void
   refresh: () => Promise<void>
   submit: (body: Omit<SubmitBody, 'csrf_token'>) => Promise<SubmitResponse>
   submitLevelless: () => Promise<SubmitResponse>
@@ -48,6 +53,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<RequestsStatus | null>(null)
   const [history, setHistory] = useState<HistoryResponse | null>(null)
   const [leaderboard, setLeaderboard] = useState<LeaderboardResponse | null>(null)
+  const [leaderboardPeriod, setLeaderboardPeriodState] = useState<LeaderboardPeriod>('all_time')
+  const [leaderboardOffset, setLeaderboardOffsetState] = useState(0)
   const [queue, setQueue] = useState<QueueResponse | null>(null)
   const [myRequest, setMyRequest] = useState<MyRequestResponse | null>(null)
   const [highest, setHighest] = useState<HighestWeightResponse | null>(null)
@@ -72,13 +79,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const [statusData, historyData, leaderboardData, highestData, myReqData] = await Promise.all([
         api.getRequestsStatus(),
         api.getHistory(),
-        api.getLeaderboard(),
+        api.getLeaderboard(leaderboardPeriod, leaderboardOffset),
         api.getHighestWeight(),
         api.getMyRequest().catch(() => null),
       ])
       setStatus(statusData)
       setHistory(historyData)
-      setLeaderboard(leaderboardData)
+      if ('leaderboard' in (leaderboardData as LeaderboardResponse)) {
+        setLeaderboard(leaderboardData as LeaderboardResponse)
+      } else {
+        setLeaderboard(null)
+      }
       setHighest(highestData)
       if (myReqData && !('error' in myReqData)) setMyRequest(myReqData)
 
@@ -136,11 +147,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
     void refresh()
   }, [refresh])
 
+  const loadLeaderboard = useCallback(async (period: LeaderboardPeriod, offset: number) => {
+    const data = (await api.getLeaderboard(period, offset)) as LeaderboardResponse
+    if ('leaderboard' in data) {
+      setLeaderboard(data)
+      setLeaderboardPeriodState(data.period)
+      setLeaderboardOffsetState(data.period_offset)
+    }
+  }, [])
+
+  const setLeaderboardPeriod = useCallback((period: LeaderboardPeriod) => {
+    void loadLeaderboard(period, 0)
+  }, [loadLeaderboard])
+
+  const shiftLeaderboardPeriod = useCallback((delta: number) => {
+    const next = Math.min(0, leaderboardOffset + delta)
+    if (next === leaderboardOffset) return
+    void loadLeaderboard(leaderboardPeriod, next)
+  }, [leaderboardOffset, leaderboardPeriod, loadLeaderboard])
+
   const value: AppState = {
     csrf,
     status,
     history,
     leaderboard,
+    leaderboardPeriod,
+    leaderboardOffset,
     queue,
     myRequest,
     highest,
@@ -150,6 +182,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     alert,
     activeTab,
     setActiveTab,
+    setLeaderboardPeriod,
+    shiftLeaderboardPeriod,
     refresh,
     submit,
     submitLevelless,
