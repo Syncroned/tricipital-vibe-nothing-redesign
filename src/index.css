@@ -6,6 +6,9 @@
 
 /* The Nothing UI tokens are scoped to .appwrap; we keep it but zero the uneven showcase padding. */
 body.appwrap {
+  --surface: #080808;
+  --raised: #101010;
+  --glass: rgba(8, 8, 8, 0.94);
   padding: 0 !important;
   font-family: var(--f-ui);
   color: var(--primary);
@@ -63,7 +66,6 @@ body.appwrap *::after {
   padding: 20px 0 18px;
   border-radius: var(--r-md);
   background: var(--glass);
-  border: 1px solid var(--glass-brd);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   overflow-y: auto;
