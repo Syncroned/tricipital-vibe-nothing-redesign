@@ -157,6 +157,28 @@ async function loadFonts(): Promise<void> {
   await document.fonts.load('1em "NType82 Mono"')
 }
 
+function mount404() {
+  let theme = 'dark'
+  try {
+    const t = localStorage.getItem('themeMode')
+    if (t === 'light' || t === 'dark') theme = t
+  } catch { /* ignore */ }
+  document.documentElement.setAttribute('data-theme', theme)
+  document.body.className = 'appwrap'
+  document.body.innerHTML = `
+    <div class="tr-404">
+      <a class="tr-404-brand fdisplay" href="https://levelrequest.com/">levelrequest</a>
+      <div class="tr-404-card mod">
+        <h1>There's no page here</h1>
+        <p>This address isn't a levelrequest page, or the page has been turned off. Check the spelling, or make your own.</p>
+        <div class="row">
+          <a class="btn btn-primary" href="https://levelrequest.com/" style="font-size:13px;padding:12px 22px">Set up your own page</a>
+          <a class="btn btn-outline" href="https://levelrequest.com/" style="font-size:13px;padding:12px 22px">Go to levelrequest.com</a>
+        </div>
+      </div>
+    </div>`
+}
+
 function mount() {
   document.documentElement.setAttribute('data-theme', 'dark')
   document.body.innerHTML = ''
@@ -181,14 +203,21 @@ function mount() {
 
 // Unclaimed paths 404 with either a bare "There's no page here." text stub or
 // a small HTML page titled "There's no page here · levelrequest" — neither has
-// the __SITE global real request pages set. Leave them alone.
+// the __SITE global real request pages set. Those get a minimal branded 404
+// instead of the full app.
 const __site = (window as { __SITE?: { name?: string } }).__SITE
 const unclaimed = !__site?.name && (
   document.title.toLowerCase().includes('no page here') ||
   (document.body?.textContent || '').trim().startsWith("There's no page here")
 )
 
-if (!unclaimed) {
+if (unclaimed) {
+  stripForeignStyles()
+  loadCss(NOTHING_CSS)
+    .then(() => injectFontStyle())
+    .finally(() => mount404())
+    .catch(() => {})
+} else {
   const loader = document.createElement('div')
   loader.className = 'tr-redesign-loading'
   loader.textContent = 'Loading redesign…'

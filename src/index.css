@@ -903,6 +903,52 @@ body.appwrap .cbx {
   margin-bottom: 0 !important;
 }
 
+/* Branded 404 for unclaimed paths */
+.tr-404 {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px;
+}
+
+.tr-404-brand {
+  font-size: 15px;
+  color: var(--primary);
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+.tr-404-card {
+  margin: auto;
+  width: 100%;
+  max-width: 560px;
+  text-align: center;
+  transform: translateY(-6vh);
+}
+
+.tr-404-card h1 {
+  font-family: var(--f-display);
+  font-size: 24px;
+  letter-spacing: 0.5px;
+  color: var(--display);
+  margin: 0 0 12px;
+}
+
+.tr-404-card p {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+.tr-404-card .row {
+  justify-content: center;
+  margin-top: 26px;
+}
+
+.tr-404-card .btn {
+  text-decoration: none;
+}
+
 /* Loading spinner while the Nothing UI CSS/fonts load */
 .tr-redesign-loading {
   display: flex;
