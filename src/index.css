@@ -362,6 +362,13 @@ button.tr-action:hover {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
   gap: 16px;
+}
+
+/* s-* span classes belong to the 12-col .poster grid; neutralize inside our custom grids */
+.tr-orbs-grid > *,
+.tr-req-grid > *,
+.tr-two-col > * {
+  grid-column: auto !important;
   align-items: start;
 }
 

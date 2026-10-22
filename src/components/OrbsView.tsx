@@ -16,7 +16,7 @@ export function OrbsView() {
 
   if (!csrf?.twitch_logged_in) {
     return (
-      <section className="mod s12 tw-text-center tw-py-16">
+      <section className="mod tw-text-center tw-py-16">
         <DotIcon name="lock" size={48} className="tw-mx-auto tw-mb-4" />
         <div className="ds">Login Required</div>
         <p className="tw-mt-2" style={{ color: 'var(--secondary)' }}>
@@ -88,7 +88,7 @@ export function OrbsView() {
   return (
     <div className="tr-orbs-grid">
       {/* Spend orbs */}
-      <section className="mod s12">
+      <section className="mod">
         <div className="mhead">
           <span className="t">Spend orbs</span>
           <span className="ex">{orbsBalance} orbs</span>
@@ -148,7 +148,7 @@ export function OrbsView() {
 
       {/* Watch Streak */}
       {ws && (
-        <section className="mod s12">
+        <section className="mod">
           <div className="mhead">
             <span className="t">Watch Streak</span>
           </div>
