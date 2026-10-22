@@ -62,6 +62,14 @@ const siteName = (() => {
   }
 })()
 
+const siteAvatar = (() => {
+  try {
+    return (window as { __SITE?: { avatar?: string } }).__SITE?.avatar || ''
+  } catch {
+    return ''
+  }
+})()
+
 function useTripleClickAdmin() {
   const { setActiveTab } = useAppState()
   const count = useRef(0)
@@ -127,8 +135,8 @@ export function Rail() {
   return (
     <nav className="tr-rail" aria-label="Sections">
       <div className="tr-rail-brand">
-        {csrf?.twitch_logged_in && csrf.avatar ? (
-          <img className="tr-pfp tr-pfp-lg" src={csrf.avatar} alt="" referrerPolicy="no-referrer" />
+        {csrf?.owner_avatar || siteAvatar ? (
+          <img className="tr-pfp tr-pfp-lg" src={csrf?.owner_avatar || siteAvatar} alt="" referrerPolicy="no-referrer" />
         ) : (
           <img className="tr-logo tr-logo-lg" src={triLogo} alt="" aria-hidden="true" />
         )}
@@ -210,8 +218,8 @@ export function Topbar() {
     <>
       <header className="tr-topbar">
         <div className="tr-topbar-brand">
-          {csrf?.twitch_logged_in && csrf.avatar ? (
-            <img className="tr-pfp" src={csrf.avatar} alt="" referrerPolicy="no-referrer" />
+          {csrf?.owner_avatar || siteAvatar ? (
+            <img className="tr-pfp" src={csrf?.owner_avatar || siteAvatar} alt="" referrerPolicy="no-referrer" />
           ) : (
             <img className="tr-logo" src={triLogo} alt="" aria-hidden="true" />
           )}

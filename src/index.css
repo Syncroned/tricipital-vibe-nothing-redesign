@@ -271,20 +271,20 @@ body.appwrap *::after {
   width: 44px;
 }
 
-/* Twitch avatar in the brand slot (original UI shows the pfp there) */
+/* Channel-owner avatar in the brand slot (original UI shows the pfp there) */
 .tr-pfp {
   height: 28px;
   width: 28px;
   flex-shrink: 0;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 0 0 1px var(--line-2);
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 .tr-pfp-lg {
   height: 44px;
   width: 44px;
-  box-shadow: 0 0 0 2px var(--accent);
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 [data-theme="light"] .tr-logo {
