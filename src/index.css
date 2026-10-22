@@ -474,6 +474,18 @@ body.appwrap select.inp option {
   color: var(--primary);
 }
 
+/* Hide native number-input spinners */
+body.appwrap input[type="number"]::-webkit-outer-spin-button,
+body.appwrap input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+body.appwrap input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 body.appwrap .chip {
   font-size: 12px;
 }
