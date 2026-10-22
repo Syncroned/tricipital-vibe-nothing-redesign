@@ -202,6 +202,11 @@ function mount() {
   )
 }
 
+// The levelrequest.com root is a marketing landing page — leave it alone
+// (also excluded via @exclude, this covers engines that ignore it).
+const onLanding = location.hostname.replace(/^www\./, '') === 'levelrequest.com'
+  && (location.pathname === '/' || location.pathname === '')
+
 // Unclaimed paths 404 with either a bare "There's no page here." text stub or
 // a small HTML page titled "There's no page here · levelrequest" — neither has
 // the __SITE global real request pages set. Those get a minimal branded 404
@@ -212,7 +217,9 @@ const unclaimed = !__site?.name && (
   (document.body?.textContent || '').trim().startsWith("There's no page here")
 )
 
-if (unclaimed) {
+if (onLanding) {
+  // leave the stock landing page untouched
+} else if (unclaimed) {
   stripForeignStyles()
   loadCss(NOTHING_CSS)
     .then(() => {

@@ -355,7 +355,7 @@ export function RequestForm() {
                           className="tw-flex tw-items-center tw-gap-2 tw-flex-wrap"
                           style={{ padding: '6px 10px', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--r-md)' }}
                         >
-                          <span className="fdisplay" style={{ fontSize: 13, minWidth: 80 }}>
+                          <span className="mono" style={{ fontSize: 13, minWidth: 80, color: 'var(--primary)' }}>
                             {slot}. {s ? s.level_id : 'Empty'}
                           </span>
                           {s && (

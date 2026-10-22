@@ -28,6 +28,8 @@ export default defineConfig({
           '*://www.tricipital.com/*',
         ],
         exclude: [
+          '*://levelrequest.com/',
+          '*://www.levelrequest.com/',
           '*://levelrequest.com/api*',
           '*://www.levelrequest.com/api*',
           '*://levelrequest.com/assets*',
