@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { AppProvider, useAppState } from './hooks/useAppState'
-import { ShaderBackground } from './components/ShaderBackground'
 import { Rail, Topbar } from './components/Nav'
 import { Alert } from './components/Alert'
 import { RequestForm } from './components/RequestForm'
@@ -103,11 +102,8 @@ function Router() {
 
 export default function App() {
   return (
-    <>
-      <ShaderBackground />
-      <AppProvider>
-        <Router />
-      </AppProvider>
-    </>
+    <AppProvider>
+      <Router />
+    </AppProvider>
   )
 }

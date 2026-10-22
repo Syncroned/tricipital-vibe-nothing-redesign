@@ -28,11 +28,6 @@ body.appwrap button {
   font-family: var(--f-mono) !important;
 }
 
-/* Replace the CSS dot field with the WebGL shader background */
-body::before {
-  display: none !important;
-}
-
 /* Smooth dark/light mode transitions for theme tokens */
 body.appwrap,
 body.appwrap *,
