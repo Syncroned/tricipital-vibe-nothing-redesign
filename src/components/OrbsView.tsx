@@ -86,6 +86,7 @@ export function OrbsView() {
   }
 
   return (
+    <div className="tr-col">
     <div className="tr-orbs-grid">
       {/* Spend orbs */}
       <section className="mod">
@@ -210,6 +211,7 @@ export function OrbsView() {
           )}
         </section>
       )}
+    </div>
 
       <div>
         <button className="btn btn-outline" onClick={() => setActiveTab('request')}>

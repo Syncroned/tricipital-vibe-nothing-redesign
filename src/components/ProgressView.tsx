@@ -434,6 +434,8 @@ export function ProgressView() {
           )
         })}
       </div>
+      </div>
+      <div className="tr-col">
 
       {/* Request Weight Transfer */}
       <form onSubmit={onTransfer} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
