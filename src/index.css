@@ -271,6 +271,22 @@ body.appwrap *::after {
   width: 44px;
 }
 
+/* Twitch avatar in the brand slot (original UI shows the pfp there) */
+.tr-pfp {
+  height: 28px;
+  width: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px var(--line-2);
+}
+
+.tr-pfp-lg {
+  height: 44px;
+  width: 44px;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
 [data-theme="light"] .tr-logo {
   filter: brightness(1.5) invert(1);
 }

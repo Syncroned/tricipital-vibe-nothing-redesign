@@ -103,7 +103,7 @@ function useTheme() {
 
 /* ── Left rail — sticky icon nav grouped public / mod / admin ──────────── */
 export function Rail() {
-  const { activeTab, status } = useAppState()
+  const { activeTab, status, csrf } = useAppState()
   const { pub, mod, admin } = useNavItems()
   const { theme, toggle } = useTheme()
   const onNameClick = useTripleClickAdmin()
@@ -127,7 +127,11 @@ export function Rail() {
   return (
     <nav className="tr-rail" aria-label="Sections">
       <div className="tr-rail-brand">
-        <img className="tr-logo tr-logo-lg" src={triLogo} alt="" aria-hidden="true" />
+        {csrf?.twitch_logged_in && csrf.avatar ? (
+          <img className="tr-pfp tr-pfp-lg" src={csrf.avatar} alt="" referrerPolicy="no-referrer" />
+        ) : (
+          <img className="tr-logo tr-logo-lg" src={triLogo} alt="" aria-hidden="true" />
+        )}
         <span className="tr-rail-name">
           <button onClick={onNameClick}>{siteName}&rsquo;s request form</button>
         </span>
@@ -206,7 +210,11 @@ export function Topbar() {
     <>
       <header className="tr-topbar">
         <div className="tr-topbar-brand">
-          <img className="tr-logo" src={triLogo} alt="" aria-hidden="true" />
+          {csrf?.twitch_logged_in && csrf.avatar ? (
+            <img className="tr-pfp" src={csrf.avatar} alt="" referrerPolicy="no-referrer" />
+          ) : (
+            <img className="tr-logo" src={triLogo} alt="" aria-hidden="true" />
+          )}
           <button onClick={onNameClick} className="tr-rail-name" style={{ textAlign: 'left' }}>
             {siteName}&rsquo;s request form
           </button>

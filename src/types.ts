@@ -4,6 +4,7 @@ export interface CsrfResponse {
   is_admin: boolean
   twitch_logged_in: boolean
   twitch_username?: string
+  avatar?: string
   twitch_is_subscriber?: boolean
   twitch_is_mod?: boolean
   /** @deprecated use twitch_is_subscriber */
