@@ -10,29 +10,34 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '22'
+
+      - name: Bump userscript version
+        id: version
+        run: |
+          VERSION=$(grep -oP "version: '\K[^']+" vite.config.ts)
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          NEW="$MAJOR.$MINOR.$((PATCH+1))"
+          sed -i "s/version: '$VERSION'/version: '$NEW'/" vite.config.ts
+          echo "version=$NEW" >> "$GITHUB_OUTPUT"
 
       - run: npm ci
       - run: npm run build
 
-      - name: Extract userscript version
-        id: version
+      - name: Commit version bump
         run: |
-          VERSION=$(grep -oP "version: '\K[^']+" vite.config.ts)
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Bump to v${{ steps.version.outputs.version }} [skip ci]"
+          git push
 
-      - name: Create or update release
+      - name: Create release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION=${{ steps.version.outputs.version }}
-          TAG="v$VERSION"
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload --clobber "$TAG" dist/tricipital-redesign.user.js
-          else
-            gh release create "$TAG" dist/tricipital-redesign.user.js --title "$TAG" --generate-notes
-          fi
+          TAG="v${{ steps.version.outputs.version }}"
+          gh release create "$TAG" dist/tricipital-redesign.user.js --title "$TAG" --generate-notes
