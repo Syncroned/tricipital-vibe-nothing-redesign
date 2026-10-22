@@ -6,10 +6,10 @@
 
 /* The Nothing UI tokens are scoped to .appwrap; we keep it but zero the uneven showcase padding. */
 body.appwrap {
-  /* Nothing palette: #171717 is the fill for UI elements (surfaces, raised bits, panels) */
+  /* Nothing palette: #171717 is the fill for UI elements; panels use the darker glass */
   --surface: #171717;
   --raised: #171717;
-  --glass: rgba(23, 23, 23, 0.92);
+  --glass: rgba(16, 16, 16, 0.9);
   padding: 0 !important;
   font-family: var(--f-ui);
   color: var(--primary);
