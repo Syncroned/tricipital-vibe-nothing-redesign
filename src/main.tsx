@@ -105,6 +105,7 @@ function loadCss(url: string): Promise<void> {
     link.rel = 'stylesheet'
     link.href = url
     link.crossOrigin = 'anonymous'
+    link.setAttribute('data-tr-keep', '1')
     link.onload = () => resolve()
     link.onerror = () => reject(new Error(`Failed to load ${url}`))
     document.head.appendChild(link)
@@ -113,8 +114,39 @@ function loadCss(url: string): Promise<void> {
 
 function injectFontStyle(): void {
   const s = document.createElement('style')
+  s.setAttribute('data-tr-keep', '1')
   s.textContent = FONT_CSS
   document.head.appendChild(s)
+}
+
+// The original site leaves its stylesheets in <head>; their generic class names
+// (.field, .card, .row2, .chips, .label, ...) collide with ours. Remove them and
+// keep removing any that get re-injected — ours carry data-tr-keep or our marker text.
+function stripForeignStyles(): void {
+  for (const el of Array.from(document.querySelectorAll<HTMLElement>('style, link[rel~="stylesheet"]'))) {
+    if (el.dataset.trKeep) continue
+    const t = el.textContent || ''
+    if (t.includes('tr-redesign-root') || t.includes('.tr-shell') || t.includes('Ndot57')) {
+      el.setAttribute('data-tr-keep', '1')
+      continue
+    }
+    el.remove()
+  }
+}
+
+function watchForeignStyles(): void {
+  new MutationObserver((muts) => {
+    for (const m of muts) {
+      for (const n of Array.from(m.addedNodes)) {
+        if (!(n instanceof HTMLElement)) continue
+        const isStyle = n instanceof HTMLStyleElement
+        const isSheet = n instanceof HTMLLinkElement && n.rel === 'stylesheet'
+        if (!isStyle && !isSheet) continue
+        if (n.dataset.trKeep || (n.textContent || '').includes('tr-redesign-root')) continue
+        n.remove()
+      }
+    }
+  }).observe(document.head, { childList: true })
 }
 
 async function loadFonts(): Promise<void> {
@@ -152,6 +184,9 @@ loader.className = 'tr-redesign-loading'
 loader.textContent = 'Loading redesign…'
 document.body.appendChild(loader)
 document.body.className = 'appwrap'
+
+stripForeignStyles()
+watchForeignStyles()
 
 loadCss(NOTHING_CSS)
   .then(() => {

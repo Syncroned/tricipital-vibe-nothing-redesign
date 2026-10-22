@@ -4,15 +4,33 @@ export interface CsrfResponse {
   is_admin: boolean
   twitch_logged_in: boolean
   twitch_username?: string
+  twitch_is_subscriber?: boolean
+  twitch_is_mod?: boolean
+  /** @deprecated use twitch_is_subscriber */
   is_sub?: boolean
+  /** @deprecated use twitch_is_mod */
   is_mod?: boolean
   orbs_enabled?: boolean
   orbs_balance?: number
+  saved_slots?: (SavedSlot | null)[]
+  watch_streak?: WatchStreak | null
+  bot_health?: unknown
+}
+
+export interface SavedSlot {
+  level_id: string
+  difficulty: string
+  level_type: string
+  creator: string
+  video_url?: string | null
+  notes?: string | null
+  custom_answers?: string[]
 }
 
 export interface RequestsStatus {
   locked: boolean
   queue_limit: number
+  min_weight?: number
   botcheck_enabled: boolean
   period_weight_reward: number
   queue_full: boolean
@@ -25,6 +43,8 @@ export interface RequestsStatus {
   video_required_difficulties: string[]
   video_required_types: string[]
   custom_questions: (CustomQuestion | null)[]
+  auto_closed?: { at?: number; reason?: string } | null
+  non_mod_mode?: boolean
 }
 
 export interface CustomQuestion {
@@ -87,11 +107,17 @@ export interface QueueEntry {
   weight: number
   notes?: string
   submitted_at?: string
+  submitted_unix?: number
+  video_url?: string
+  is_spotlighted?: boolean
 }
 
 export interface QueueResponse {
-  queue: QueueEntry[]
-  count: number
+  /** `queue` on older responses, `requests` on the current API */
+  queue?: QueueEntry[]
+  requests?: QueueEntry[]
+  count?: number
+  weight_issued?: number | null
 }
 
 export interface MyRequestResponse {
@@ -146,8 +172,29 @@ export interface MilestoneWeightItem {
   last_claimed_at?: string
   can_claim?: boolean
   next_claim_str?: string
+  next_claim_at?: string
   has_active_code?: boolean
+  active_code?: string
   code?: string
+}
+
+export type TransferStatus =
+  | 'pending'
+  | 'pending_mod'
+  | 'pending_recipient'
+  | 'accepted'
+  | 'denied'
+  | 'rejected'
+  | 'cancelled'
+
+export interface TransferAccount {
+  account_created_at?: string
+}
+
+export interface TransferCounts {
+  requests_sent?: number
+  requests_received?: number
+  codes_created?: number
 }
 
 export interface TransferRequest {
@@ -157,7 +204,11 @@ export interface TransferRequest {
   sender_level_id: string
   recipient_level_id: string
   amount: number | string
-  status: 'pending' | 'accepted' | 'rejected' | 'cancelled'
+  status: TransferStatus
+  sender_account?: TransferAccount | null
+  recipient_account?: TransferAccount | null
+  sender_counts?: TransferCounts | null
+  recipient_counts?: TransferCounts | null
 }
 
 export interface OrbsTier {
@@ -167,8 +218,22 @@ export interface OrbsTier {
   label?: string
 }
 
+export interface StreakCurve {
+  day2?: number
+  day3?: number
+  day4?: number
+  plateau?: number
+  milestones?: { every: number; orbs: number }[]
+}
+
 export interface WatchStreak {
-  streak: number
+  current: number
+  last_claimed?: number
+  claimable_orbs?: number
+  at_risk?: boolean
+  curve?: StreakCurve
+  /** legacy fields */
+  streak?: number
   last_stream_at?: string
   missed?: boolean
   claimable?: boolean
@@ -238,4 +303,120 @@ export interface SubmitResponse {
 
 export interface ApiError {
   error: string
+}
+
+export interface UserPrefs {
+  discord_linked: boolean
+  discord_username?: string
+  notify_level_played?: boolean
+  notify_level_active?: boolean
+  error?: string
+}
+
+export interface ModAction {
+  id: number
+  twitch_username: string
+  action: string
+  detail?: string
+  created_unix?: number
+  created_at?: string
+}
+
+export interface ModLookupCode {
+  code?: string
+  weight_award?: number | string
+  origin_level_id?: string
+  redeemed?: boolean
+  redeemed_at?: string
+}
+
+export interface ModLookupResult {
+  username: string
+  account?: TransferAccount | null
+  transfer_requests?: TransferRequest[]
+  codes_created?: ModLookupCode[]
+  error?: string
+}
+
+export interface PredictionOutcome {
+  id: number
+  label: string
+  total_staked: number
+}
+
+export interface PredictionWager {
+  outcome_id: number
+  orbs_staked: number
+  payout?: number | null
+}
+
+export interface Prediction {
+  id: number
+  title: string
+  status: 'open' | 'locked' | 'resolved' | 'cancelled'
+  outcomes: PredictionOutcome[]
+  winning_outcome_id?: number | null
+  my_wager?: PredictionWager | null
+  locks_at?: number | null
+  share_slug?: string
+}
+
+export interface PredictionPreset {
+  id: number
+  title: string
+  outcomes_text?: string
+  outcomes?: string[]
+}
+
+export interface SitePredictionState {
+  prediction?: Prediction | null
+  orbs_balance?: number
+  error?: string
+}
+
+export interface PendingTransfersResponse {
+  requests?: TransferRequest[]
+  error?: string
+}
+
+export interface ModActionsResponse {
+  actions?: ModAction[]
+  error?: string
+}
+
+export interface OutcomeWagersResponse {
+  wagers?: { username: string; staked: number }[]
+  error?: string
+}
+
+export interface PredictionsStateResponse {
+  prediction?: Prediction | null
+  error?: string
+}
+
+export interface PresetsResponse {
+  presets?: PredictionPreset[]
+  error?: string
+}
+
+export interface FavoriteEntry {
+  id: number | string
+  level_id: string
+  difficulty?: string
+  level_type?: string
+  creator?: string
+  twitch_username?: string
+  video_url?: string
+  note?: string
+  rating?: number | string
+  stream_session_id?: number | string | null
+  created_at?: string
+}
+
+export interface FavoritesResponse {
+  favorites?: FavoriteEntry[]
+  count?: number
+  streams_ever?: boolean
+  bot_ready?: boolean
+  error?: string
 }

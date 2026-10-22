@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AppProvider, useAppState } from './hooks/useAppState'
 import { ShaderBackground } from './components/ShaderBackground'
-import { Nav } from './components/Nav'
+import { Rail, Topbar } from './components/Nav'
 import { Alert } from './components/Alert'
 import { RequestForm } from './components/RequestForm'
 import { HistoryView } from './components/HistoryView'
@@ -9,6 +9,9 @@ import { QueueView } from './components/QueueView'
 import { LeaderboardView } from './components/LeaderboardView'
 import { ProgressView } from './components/ProgressView'
 import { ModView } from './components/ModView'
+import { AdminView } from './components/AdminView'
+import { OrbsView } from './components/OrbsView'
+import { PredictView } from './components/PredictView'
 import { DotIcon } from './components/DotIcon'
 
 function renderTab(tab: string) {
@@ -19,12 +22,14 @@ function renderTab(tab: string) {
     case 'leaderboard': return <LeaderboardView />
     case 'progress': return <ProgressView />
     case 'mod': return <ModView />
+    case 'admin': return <AdminView />
+    case 'orbs': return <OrbsView />
     default: return null
   }
 }
 
 function Router() {
-  const { activeTab, loading, error } = useAppState()
+  const { activeTab, setActiveTab, loading, error, sendsShown, queueUnlocked, isExtensionMode, predictSlug } = useAppState()
   const [currentTab, setCurrentTab] = useState(activeTab)
   const [exiting, setExiting] = useState(false)
 
@@ -37,6 +42,12 @@ function Router() {
     }, 180)
     return () => clearTimeout(id)
   }, [activeTab, currentTab])
+
+  // Tabs hidden on the live site bounce back to the form
+  useEffect(() => {
+    if (!sendsShown && activeTab === 'leaderboard') setActiveTab('request')
+    if (!queueUnlocked && activeTab === 'queue') setActiveTab('request')
+  }, [sendsShown, queueUnlocked, activeTab, setActiveTab])
 
   if (loading) {
     return (
@@ -55,14 +66,38 @@ function Router() {
     )
   }
 
+  if (predictSlug) {
+    return (
+      <>
+        <PredictView slug={predictSlug} />
+        <Alert />
+      </>
+    )
+  }
+
+  // Twitch extension panels only show the mod screen
+  if (isExtensionMode) {
+    return (
+      <main className="tr-main">
+        <div className="tr-view tr-view-enter">
+          <ModView />
+        </div>
+        <Alert />
+      </main>
+    )
+  }
+
   return (
-    <main className="tr-main">
-      <Nav />
-      <div className={`tr-view ${exiting ? 'tr-view-exit' : 'tr-view-enter'}`}>
-        {renderTab(currentTab)}
-      </div>
-      <Alert />
-    </main>
+    <div className="tr-shell">
+      <Rail />
+      <main className="tr-main">
+        <Topbar />
+        <div className={`tr-view ${exiting ? 'tr-view-exit' : 'tr-view-enter'}`}>
+          {renderTab(currentTab)}
+        </div>
+        <Alert />
+      </main>
+    </div>
   )
 }
 

@@ -1,6 +1,6 @@
-# Tricipital Vibe Nothing Redesign
+# LevelRequest Vibe Nothing Redesign
 
-A full Tampermonkey userscript that replaces tricipital.com with a **Nothing-inspired UI** built on:
+A full Tampermonkey userscript that replaces levelrequest.com (and its instances, e.g. tricipital.com, levelrequest.com/tess/) with a **Nothing-inspired UI** built on:
 
 - **Vite 8**
 - **React 19 + TypeScript**
@@ -19,7 +19,7 @@ A full Tampermonkey userscript that replaces tricipital.com with a **Nothing-ins
 1. Install [Tampermonkey](https://www.tampermonkey.net/) in your browser.
 2. Open `dist/tricipital-redesign.user.js` (or `../tricipital-redesign.user.js`) in a new tab.
 3. Tampermonkey will detect it — click **Install**.
-4. Visit `https://tricipital.com/` or `https://www.tricipital.com/`.
+4. Visit `https://levelrequest.com/`, `https://levelrequest.com/tess/`, or `https://tricipital.com/`.
 
 ## Screenshots
 
@@ -33,7 +33,7 @@ yes ik light mode is an eyesore dawg
 
 ```bash
 npm install
-npm run dev      # dev server with /api and /assets proxy to www.tricipital.com
+npm run dev      # dev server with /api and /assets proxy to levelrequest.com
 npm run build    # produces dist/tricipital-redesign.user.js
 ```
 
@@ -48,7 +48,8 @@ npm run build    # produces dist/tricipital-redesign.user.js
   - `QueueView` — subscriber-only live queue cards.
   - `LeaderboardView` — send-score leaderboard.
   - `ProgressView` — logged-in weight history.
-  - `ModView` — admin password gate.
+  - `ModView` — admin password gate, queue management, audit log, transfer review, predictions, favorites.
+  - `PredictView` — public prediction wagering page for `/{slug}` links.
 - `src/components/DotIcon.tsx` — 9×9 dot-matrix icons matching the Nothing glyph language.
 
 ## Extending

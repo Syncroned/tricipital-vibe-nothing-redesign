@@ -7,8 +7,8 @@ export default defineConfig({
   publicDir: false,
   server: {
     proxy: {
-      '/api': { target: 'https://www.tricipital.com', changeOrigin: true, secure: true },
-      '/assets': { target: 'https://www.tricipital.com', changeOrigin: true, secure: true },
+      '/api': { target: 'https://levelrequest.com', changeOrigin: true, secure: true },
+      '/assets': { target: 'https://levelrequest.com', changeOrigin: true, secure: true },
     },
   },
   plugins: [
@@ -16,13 +16,27 @@ export default defineConfig({
     monkey({
       entry: 'src/main.tsx',
       userscript: {
-        name: 'Tricipital Vibe Nothing Redesign',
+        name: 'LevelRequest Vibe Nothing Redesign',
         namespace: 'https://tricipital.com',
-        version: '0.1.43',
-        description: 'A Nothing-inspired full UI redesign for tricipital.com',
+        version: '0.2.0',
+        description: 'A Nothing-inspired full UI redesign for levelrequest.com (tricipital.com)',
         author: 'SyncTM',
-        match: ['*://tricipital.com/*', '*://www.tricipital.com/*'],
-        exclude: ['*://tricipital.com/api*', '*://www.tricipital.com/api*', '*://tricipital.com/assets*', '*://www.tricipital.com/assets*'],
+        match: [
+          '*://levelrequest.com/*',
+          '*://www.levelrequest.com/*',
+          '*://tricipital.com/*',
+          '*://www.tricipital.com/*',
+        ],
+        exclude: [
+          '*://levelrequest.com/api*',
+          '*://www.levelrequest.com/api*',
+          '*://levelrequest.com/assets*',
+          '*://www.levelrequest.com/assets*',
+          '*://tricipital.com/api*',
+          '*://www.tricipital.com/api*',
+          '*://tricipital.com/assets*',
+          '*://www.tricipital.com/assets*',
+        ],
         grant: 'none',
         'run-at': 'document-end',
       },

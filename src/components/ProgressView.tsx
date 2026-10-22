@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAppState } from '../hooks/useAppState'
 import { api } from '../api'
 import { DotIcon } from './DotIcon'
+import { cn } from '../utils'
 
 const TIERS = [
   { key: 'rate', label: 'Rate', color: '#c8c8c8' },
@@ -26,10 +27,12 @@ function parseVal(v: string | number | undefined): number {
 }
 
 export function ProgressView() {
-  const { csrf, progress, loginTwitch, refresh } = useAppState()
+  const { csrf, progress, loginTwitch, refresh, isSub } = useAppState()
   const [expanded, setExpanded] = useState<string | null>(null)
   const [pointsOpen, setPointsOpen] = useState(false)
+  const [codeInfoOpen, setCodeInfoOpen] = useState(false)
   const [submitting, setSubmitting] = useState<string | null>(null)
+  const [redeemLevelForm, setRedeemLevelForm] = useState({ level_id: '', code: '' })
 
   const [trForm, setTrForm] = useState({
     recipient_username: '',
@@ -147,10 +150,33 @@ export function ProgressView() {
     void refresh()
   }
 
+  const onClaimMilestone = async (milestoneId: number) => {
+    setSubmitting('milestone-' + milestoneId)
+    await api.claimMilestoneWeight(milestoneId)
+    setSubmitting(null)
+    void refresh()
+  }
+
+  const onRedeemToLevel = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const levelId = redeemLevelForm.level_id.trim()
+    const code = redeemLevelForm.code.trim()
+    if (!levelId || !code) return
+    setSubmitting('redeem-level')
+    await api.redeemPromoLevel(levelId, code)
+    setRedeemLevelForm({ level_id: '', code: '' })
+    setSubmitting(null)
+    void refresh()
+  }
+
+  const milestoneItems = progress?.milestone_weights || []
+  const weightLevelOptions = (progress?.weights || []).map((w) => w.level_id)
+
   return (
-    <section className="mod s12">
+    <div className="tr-two-col">
+      <div className="tr-col">
       {/* Score */}
-      <div className="card tw-mb-6">
+      <div className="card">
         <div className="tw-flex tw-items-center tw-gap-3 tw-mb-2">
           <div className="t" style={{ }}>Your Score</div>
           <button className="chip" onClick={() => setPointsOpen((s) => !s)}>
@@ -219,9 +245,36 @@ export function ProgressView() {
         </div>
       </div>
 
+      {/* Incoming transfer requests */}
+      {(progress.transfer_requests_incoming?.length ?? 0) > 0 && (
+        <div className="card" style={{ borderColor: 'var(--success)' }}>
+          <div className="t" style={{ }}>Incoming Weight Transfers</div>
+          <div className="tw-space-y-2 tw-mt-2">
+            {progress.transfer_requests_incoming!.map((r) => (
+              <div key={r.id} className="tw-p-2 tw-rounded" style={{ background: 'var(--surface)' }}>
+                <div style={{ color: 'var(--primary)' }}>
+                  <strong>{r.sender_username}</strong> wants to send you <strong style={{ color: 'var(--success)' }}>+{r.amount}</strong> weight
+                </div>
+                <div className="mono" style={{ color: 'var(--muted)' }}>
+                  {r.sender_level_id} → your level {r.recipient_level_id}
+                </div>
+                <div className="tw-flex tw-gap-2 tw-mt-2">
+                  <button onClick={() => void onRespond(r.id, true)} disabled={submitting === 'respond-' + r.id} className="btn btn-primary" style={{ }}>
+                    Accept
+                  </button>
+                  <button onClick={() => void onRespond(r.id, false)} disabled={submitting === 'respond-' + r.id} className="btn" style={{ }}>
+                    Deny
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Active milestone */}
       {userMilestone && (
-        <div className="card tw-mb-6">
+        <div className="card">
           <div className="t" style={{ }}>Active Milestone</div>
           <div className="fdisplay" style={{ fontSize: 16, margin: '6px 0' }}>
             ★ {userMilestone.points_required} pts{userMilestone.label ? ` · “${userMilestone.label}”` : ''}
@@ -246,6 +299,58 @@ export function ProgressView() {
         </div>
       )}
 
+      {/* Milestone free-weight code items */}
+      {milestoneItems.length > 0 && (
+        <div className="tw-flex tw-flex-col tw-gap-2">
+          {milestoneItems.map((item) => {
+            const nextClaimStr = (() => {
+              if (item.has_active_code || !item.next_claim_at) return ''
+              const diff = Math.max(0, new Date(item.next_claim_at).getTime() - Date.now())
+              if (diff <= 0) return ''
+              const d = Math.floor(diff / 86400000)
+              const h = Math.floor((diff % 86400000) / 3600000)
+              return `in ${d > 0 ? `${d}d ` : ''}${h}h`
+            })()
+            return (
+              <div key={item.milestone_id} className="card" style={{ padding: '16px 18px !important' }}>
+                <div className="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-mb-2">
+                  <span className="t" style={{}}>
+                    {item.label ? `${item.label} · Free Weight` : 'Free Weight Code'}
+                  </span>
+                  <span className="mono" style={{ color: 'var(--muted)', fontSize: 11 }}>
+                    +{item.amount} weight · every {item.cooldown_days}d
+                  </span>
+                </div>
+                {item.can_claim && (
+                  <button
+                    className="btn btn-primary"
+                    disabled={submitting === 'milestone-' + item.milestone_id}
+                    onClick={() => void onClaimMilestone(item.milestone_id)}
+                  >
+                    Generate Code
+                  </button>
+                )}
+                {!item.can_claim && !item.has_active_code && nextClaimStr && (
+                  <div className="mono" style={{ color: 'var(--muted)', fontSize: 12 }}>
+                    Next claim {nextClaimStr}
+                  </div>
+                )}
+                {item.has_active_code && !item.active_code && (
+                  <div className="mono" style={{ color: 'var(--secondary)', fontSize: 12 }}>
+                    You have an unredeemed code. Redeem it below before making a new one.
+                  </div>
+                )}
+                {item.active_code && (
+                  <div className="fdisplay" style={{ fontSize: 15, color: 'var(--primary)', letterSpacing: 1 }}>
+                    {item.active_code}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
       {/* Weights */}
       <div className="mhead">
         <span className="t">Your Level Weights</span>
@@ -258,7 +363,7 @@ export function ProgressView() {
         </div>
       )}
 
-      <div className="tw-space-y-2 tw-mb-6">
+      <div className="tw-space-y-2">
         {(progress.weights || []).map((w) => {
           const isExpanded = expanded === w.level_id
           const isLevelless = w.level_id.startsWith('wl_')
@@ -330,57 +435,8 @@ export function ProgressView() {
         })}
       </div>
 
-      {/* Incoming transfer requests */}
-      {(progress.transfer_requests_incoming?.length ?? 0) > 0 && (
-        <div className="card tw-mb-6" style={{ borderColor: 'var(--success)' }}>
-          <div className="t" style={{ }}>Incoming Weight Transfers</div>
-          <div className="tw-space-y-2 tw-mt-2">
-            {progress.transfer_requests_incoming!.map((r) => (
-              <div key={r.id} className="tw-p-2 tw-rounded" style={{ background: 'var(--surface)' }}>
-                <div style={{ color: 'var(--primary)' }}>
-                  <strong>{r.sender_username}</strong> wants to send you <strong style={{ color: 'var(--success)' }}>+{r.amount}</strong> weight
-                </div>
-                <div className="mono" style={{ color: 'var(--muted)' }}>
-                  {r.sender_level_id} → your level {r.recipient_level_id}
-                </div>
-                <div className="tw-flex tw-gap-2 tw-mt-2">
-                  <button onClick={() => void onRespond(r.id, true)} disabled={submitting === 'respond-' + r.id} className="btn btn-primary" style={{ }}>
-                    Accept
-                  </button>
-                  <button onClick={() => void onRespond(r.id, false)} disabled={submitting === 'respond-' + r.id} className="btn" style={{ }}>
-                    Deny
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Outgoing transfer requests */}
-      {(progress.transfer_requests_outgoing?.length ?? 0) > 0 && (
-        <div className="card tw-mb-6">
-          <div className="t" style={{ }}>Your Outgoing Requests</div>
-          <div className="tw-space-y-2 tw-mt-2">
-            {progress.transfer_requests_outgoing!.map((r) => (
-              <div key={r.id} className="tw-flex tw-items-center tw-justify-between tw-p-2 tw-rounded" style={{ background: 'var(--surface)' }}>
-                <div>
-                  <div style={{ color: 'var(--primary)' }}>
-                    +{r.amount} to <strong>{r.recipient_username}</strong>
-                  </div>
-                  <div className="mono" style={{ color: 'var(--muted)' }}>{r.status}</div>
-                </div>
-                <button onClick={() => void onCancel(r.id)} disabled={submitting === 'cancel-' + r.id} className="btn" style={{ }}>
-                  Cancel
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Request Weight Transfer */}
-      <form onSubmit={onTransfer} className="card tw-mb-6" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <form onSubmit={onTransfer} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <div className="t" style={{ }}>Request Weight Transfer</div>
         <p style={{ color: 'var(--secondary)', marginBottom: 4 }}>
           Send weight to a specific friend. A mod reviews it first, then your friend accepts or denies it.
@@ -425,15 +481,37 @@ export function ProgressView() {
         </div>
       </form>
 
+      {/* Outgoing transfer requests */}
+      {(progress.transfer_requests_outgoing?.length ?? 0) > 0 && (
+        <div className="card">
+          <div className="t" style={{ }}>Your Outgoing Requests</div>
+          <div className="tw-space-y-2 tw-mt-2">
+            {progress.transfer_requests_outgoing!.map((r) => (
+              <div key={r.id} className="tw-flex tw-items-center tw-justify-between tw-p-2 tw-rounded" style={{ background: 'var(--surface)' }}>
+                <div>
+                  <div style={{ color: 'var(--primary)' }}>
+                    +{r.amount} to <strong>{r.recipient_username}</strong>
+                  </div>
+                  <div className="mono" style={{ color: 'var(--muted)' }}>{r.status}</div>
+                </div>
+                <button onClick={() => void onCancel(r.id)} disabled={submitting === 'cancel-' + r.id} className="btn" style={{ }}>
+                  Cancel
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Create Weight Code */}
-      <form onSubmit={onCreateCode} className="card tw-mb-6" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <form onSubmit={onCreateCode} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <div className="tw-flex tw-items-center tw-gap-2">
           <span className="t" style={{ }}>Create Weight Code</span>
-          <button type="button" className="chip" onClick={() => setPointsOpen((s) => !s)}>
+          <button type="button" className="chip" onClick={() => setCodeInfoOpen((s) => !s)}>
             What is this?
           </button>
         </div>
-        {pointsOpen && (
+        {codeInfoOpen && (
           <div className="tw-p-2 tw-rounded" style={{ color: 'var(--secondary)', background: 'var(--surface)' }}>
             Move weight off any level from your progress list into a one-time code redeemable on any level. Codes are private to you by default — subscribers can make a code public or give it custom text.
           </div>
@@ -458,11 +536,29 @@ export function ProgressView() {
           />
           <input
             className="inp"
-            placeholder="Custom code (optional)"
+            placeholder={isSub ? 'Custom code (optional)' : 'Custom code (subscribers only)'}
+            disabled={!isSub}
             value={codeForm.custom_code}
             onChange={(e) => setCodeForm((s) => ({ ...s, custom_code: e.target.value }))}
-            style={{ flex: 1, minWidth: 120 }}
+            style={{ flex: 1, minWidth: 120, opacity: isSub ? 1 : 0.4 }}
           />
+          <label className="tw-flex tw-items-center tw-gap-2" style={{ color: isSub ? 'var(--secondary)' : 'var(--muted)', fontSize: 12, cursor: isSub ? 'pointer' : 'default' }}>
+            <span className={cn('box', codeForm.public && 'on')} style={{ width: 14, height: 14 }}>
+              {codeForm.public && (
+                <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 12l5 5L20 6" />
+                </svg>
+              )}
+            </span>
+            <input
+              type="checkbox"
+              className="tw-sr-only"
+              disabled={!isSub}
+              checked={codeForm.public}
+              onChange={(e) => setCodeForm((s) => ({ ...s, public: e.target.checked }))}
+            />
+            Public{isSub ? '' : ' (subs only)'}
+          </label>
           <button type="submit" disabled={submitting === 'code'} className="btn btn-primary" style={{ flex: '0 0 auto' }}>
             Create Code
           </button>
@@ -473,9 +569,57 @@ export function ProgressView() {
             <div style={{ color: 'var(--secondary)' }}>
               +{codeResult.weight_award} weight · now {codeResult.new_weight}
             </div>
+            <div style={{ color: 'var(--accent-text)', fontSize: 11, marginTop: 4 }}>
+              ⚠ Write this code down now, it won't be shown again.
+            </div>
           </div>
         )}
       </form>
-    </section>
+
+      {/* Redeem Code To Level */}
+      <form onSubmit={onRedeemToLevel} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div className="t" style={{}}>Redeem Code To Level</div>
+        <p style={{ color: 'var(--secondary)', marginBottom: 4 }}>
+          Got a weight code from a friend or milestone? Choose which level gets the weight.
+        </p>
+        <div className="tw-flex tw-flex-wrap tw-gap-2">
+          {weightLevelOptions.length > 0 ? (
+            <select
+              className="inp"
+              value={redeemLevelForm.level_id}
+              onChange={(e) => setRedeemLevelForm((s) => ({ ...s, level_id: e.target.value }))}
+              style={{ flex: 2, minWidth: 140 }}
+            >
+              <option value="">Choose which level gets the weight</option>
+              {weightLevelOptions.map((id) => (
+                <option key={id} value={id}>
+                  {id.startsWith('wl_') ? `No Level (${id})` : `Level ${id}`}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              className="inp"
+              placeholder="Level ID"
+              value={redeemLevelForm.level_id}
+              onChange={(e) => setRedeemLevelForm((s) => ({ ...s, level_id: e.target.value }))}
+              style={{ flex: 2, minWidth: 140 }}
+            />
+          )}
+          <input
+            className="inp"
+            placeholder="Enter secret code"
+            maxLength={50}
+            value={redeemLevelForm.code}
+            onChange={(e) => setRedeemLevelForm((s) => ({ ...s, code: e.target.value }))}
+            style={{ flex: 2, minWidth: 140 }}
+          />
+          <button type="submit" disabled={submitting === 'redeem-level'} className="btn btn-primary" style={{ flex: '0 0 auto' }}>
+            Apply
+          </button>
+        </div>
+      </form>
+      </div>
+    </div>
   )
 }

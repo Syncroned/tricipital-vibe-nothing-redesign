@@ -45,21 +45,221 @@ body.appwrap *::after {
               stroke 0.4s var(--ease, ease);
 }
 
-/* Uniform action pills in the header */
-.tr-header {
+/* App shell: 96px nav rail + fluid main column (matches the live site layout) */
+.tr-shell {
   display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 32px;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 16px;
+  padding: 16px;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
-/* Brand: logo + wordmark with the uniform 12px element gap */
-.tr-brand {
+/* Left rail — sticky vertical icon nav */
+.tr-rail {
+  position: sticky;
+  top: 16px;
+  height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 0 18px;
+  border-radius: var(--r-md);
+  background: var(--glass);
+  border: 1px solid var(--glass-brd);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.tr-rail::-webkit-scrollbar { display: none; }
+
+.tr-rail-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.tr-rail-name {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  max-width: 100%;
+  padding: 0 8px;
+  text-align: center;
+  line-height: 1.4;
+  user-select: none;
+}
+
+.tr-rail-name button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  padding: 0;
+}
+
+.tr-rail-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tr-rail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 80px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--secondary);
+  cursor: pointer;
+  font-family: var(--f-ui);
+}
+
+.tr-rail-ind {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 32px;
+  border-radius: var(--r-pill);
+  transition: background-color 0.1s var(--ease, ease), color 0.1s var(--ease, ease);
+}
+
+.tr-rail-item:hover .tr-rail-ind {
+  background: var(--raised);
+}
+
+.tr-rail-item.on {
+  color: var(--primary);
+}
+
+.tr-rail-item.on .tr-rail-ind {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.tr-rail-item.locked {
+  opacity: 0.55;
+}
+
+.tr-rail-label {
+  font-size: 11px;
+  text-align: center;
+}
+
+.tr-rail-div {
+  width: 40px;
+  height: 1px;
+  background: var(--line-2);
+  flex: none;
+}
+
+.tr-rail-head {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: -6px;
+}
+
+.tr-rail-theme {
+  margin-top: auto;
+  width: 48px;
+  height: 48px;
+}
+
+.tr-rail-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tr-rail-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--line-2);
+}
+
+.tr-rail-dot.open {
+  background: var(--success);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--success) 22%, transparent);
+}
+
+/* Topbar inside the main column — brand (mobile only), page title, account cluster */
+.tr-topbar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  flex-wrap: wrap;
+  min-height: 56px;
+  padding: 4px 8px 0;
 }
 
+.tr-topbar-brand {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.tr-topbar-title {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.tr-page-title {
+  font-family: var(--f-head);
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--display);
+}
+
+.tr-page-sub {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.tr-acct {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Mobile nav — sticky pill row replacing the rail */
+.tr-mnav {
+  display: none;
+}
+
+.tr-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Logo artwork is light dots — invert for light mode like the shader background */
 .tr-logo {
   height: 28px;
   width: 28px;
@@ -68,20 +268,13 @@ body.appwrap *::after {
   transition: filter 0.4s var(--ease, ease);
 }
 
-/* Logo artwork is light dots — invert for light mode like the shader background */
+.tr-logo-lg {
+  height: 44px;
+  width: 44px;
+}
+
 [data-theme="light"] .tr-logo {
   filter: brightness(1.5) invert(1);
-}
-
-.tr-header .tr-actions {
-  justify-self: end;
-}
-
-.tr-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
 }
 
 .tr-action {
@@ -108,6 +301,131 @@ button.tr-action {
 
 button.tr-action:hover {
   border-color: var(--primary);
+}
+
+/* Screen layouts (match the live site's grid compositions) */
+.tr-req-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.tr-req-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.tr-req-grid .field,
+.tr-req-side .field {
+  margin-bottom: 0 !important;
+}
+
+.tr-req-grid .mhead,
+.tr-req-side .mhead {
+  margin-bottom: 16px !important;
+}
+
+.tr-req-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px 32px;
+  align-items: start;
+}
+
+.tr-row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.tr-two-col {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.tr-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.tr-col > .mhead {
+  margin-bottom: 0 !important;
+}
+
+.tr-orbs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.tr-status-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.tr-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--secondary);
+}
+
+.tr-status-pill .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.tr-status-pill.closed .dot {
+  background: var(--accent-text);
+}
+
+/* Mobile: rail hides, brand moves into the topbar, sticky tab pills appear */
+@media (max-width: 960px) {
+  .tr-shell {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 10px;
+    gap: 12px;
+  }
+  .tr-rail { display: none; }
+  .tr-topbar-brand { display: flex; }
+  .tr-mnav {
+    display: block;
+    position: sticky;
+    top: 8px;
+    z-index: 20;
+    background: var(--glass);
+    border: 1px solid var(--glass-brd);
+    border-radius: var(--r-pill);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    padding: 6px;
+  }
+  .tr-req-grid,
+  .tr-two-col {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .tr-req-cols,
+  .tr-row2 {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Larger, more readable text */
@@ -144,9 +462,19 @@ body.appwrap .pill {
   font-size: 11px;
 }
 
+/* Pill-style centered tabs (live site uses pills in a centered row) */
 body.appwrap .tabs button {
   font-size: 13px;
-  padding-bottom: 12px;
+  padding: 6px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  border-bottom: 1px solid var(--line-2);
+  transition: color 0.1s var(--ease, ease), border-color 0.1s var(--ease, ease), background-color 0.1s var(--ease, ease) !important;
+}
+
+body.appwrap .tabs button:hover {
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 body.appwrap table th {
@@ -187,14 +515,18 @@ body.appwrap .tr-action {
   min-height: 100vh;
 }
 
-/* Equal 32px spacing tokens everywhere */
 .tr-main {
-  max-width: 1480px;
-  margin: 0 auto;
-  padding: 32px;
-  box-sizing: border-box;
-  transform: scale(1.05);
-  transform-origin: top center;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 24px;
+}
+
+.tr-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .tr-view-enter .mod,
@@ -295,49 +627,39 @@ body.appwrap .tr-action {
 .tr-nav {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
+/* Single-column stacking: the live site is one 660px column, not a poster grid */
 .poster {
-  gap: 32px !important;
+  display: flex !important;
+  flex-direction: column;
+  gap: 20px !important;
+}
+
+.poster > .mod {
+  width: 100%;
 }
 
 .mod {
-  padding: 32px !important;
-}
-
-.mhead {
-  margin-bottom: 32px !important;
-}
-
-.field {
-  margin-bottom: 32px !important;
-}
-
-.card {
-  padding: 32px !important;
+  padding: 22px !important;
 }
 
 .row {
-  gap: 12px !important;
+  gap: 10px !important;
 }
 
 /* Tabs using buttons instead of spans */
 .tabs button {
   all: unset;
   display: inline-block;
-  padding-bottom: 9px;
   color: var(--muted);
   font-family: var(--f-mono);
   font-size: 11px;
-  border-bottom: 2px solid transparent;
   cursor: pointer;
-  transition: color 0.2s var(--ease, ease), border-color 0.2s var(--ease, ease);
 }
 .tabs button.on {
   color: var(--primary);
-  border-color: var(--display);
 }
 
 /* Hide default checkboxes for custom switch / checkbox */
@@ -517,6 +839,7 @@ body.appwrap .switch.on::after {
 body.appwrap .tabs button.on {
   color: var(--accent-text) !important;
   border-color: var(--accent) !important;
+  background: var(--glass) !important;
 }
 
 body.appwrap .inp:focus,
