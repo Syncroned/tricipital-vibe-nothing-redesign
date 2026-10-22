@@ -926,18 +926,13 @@ body.appwrap .cbx {
   transform: translateY(-6vh);
 }
 
-.tr-404-card h1 {
-  font-family: var(--f-display);
-  font-size: 24px;
-  letter-spacing: 0.5px;
-  color: var(--display);
-  margin: 0 0 12px;
+.tr-404-card .tr-page-title {
+  font-size: clamp(28px, 3.2vw, 38px);
+  margin-bottom: 12px;
 }
 
-.tr-404-card p {
-  color: var(--muted);
+.tr-404-card .tr-page-sub {
   font-size: 14px;
-  margin: 0;
 }
 
 .tr-404-card .row {

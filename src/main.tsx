@@ -169,11 +169,12 @@ function mount404() {
     <div class="tr-404">
       <a class="tr-404-brand fdisplay" href="https://levelrequest.com/">levelrequest</a>
       <div class="tr-404-card mod">
-        <h1>There's no page here</h1>
-        <p>This address isn't a levelrequest page, or the page has been turned off. Check the spelling, or make your own.</p>
+        <div class="mhead" style="justify-content:center"><span class="t">404</span></div>
+        <h1 class="tr-page-title">There's no page here</h1>
+        <p class="tr-page-sub">This address isn't a levelrequest page, or the page has been turned off. Check the spelling, or make your own.</p>
         <div class="row">
-          <a class="btn btn-primary" href="https://levelrequest.com/" style="font-size:13px;padding:12px 22px">Set up your own page</a>
-          <a class="btn btn-outline" href="https://levelrequest.com/" style="font-size:13px;padding:12px 22px">Go to levelrequest.com</a>
+          <a class="btn btn-primary" href="https://levelrequest.com/" style="font-size:14px;padding:11px 22px">Set up your own page</a>
+          <a class="btn btn-outline" href="https://levelrequest.com/" style="font-size:14px;padding:11px 22px">Go to levelrequest.com</a>
         </div>
       </div>
     </div>`
@@ -214,9 +215,12 @@ const unclaimed = !__site?.name && (
 if (unclaimed) {
   stripForeignStyles()
   loadCss(NOTHING_CSS)
-    .then(() => injectFontStyle())
-    .finally(() => mount404())
-    .catch(() => {})
+    .then(() => {
+      injectFontStyle()
+      return loadFonts()
+    })
+    .then(() => mount404())
+    .catch(() => mount404())
 } else {
   const loader = document.createElement('div')
   loader.className = 'tr-redesign-loading'
