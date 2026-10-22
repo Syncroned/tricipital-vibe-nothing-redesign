@@ -18,7 +18,7 @@ export default defineConfig({
       userscript: {
         name: 'LevelRequest Vibe Nothing Redesign',
         namespace: 'https://tricipital.com',
-        version: '0.2.0',
+        version: '0.2.1',
         description: 'A Nothing-inspired full UI redesign for levelrequest.com (tricipital.com)',
         author: 'SyncTM',
         match: [
