@@ -369,7 +369,6 @@ button.tr-action:hover {
 .tr-req-grid > *,
 .tr-two-col > * {
   grid-column: auto !important;
-  align-items: start;
 }
 
 .tr-status-row {
