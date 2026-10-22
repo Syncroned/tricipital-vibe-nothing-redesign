@@ -6,9 +6,6 @@
 
 /* The Nothing UI tokens are scoped to .appwrap; we keep it but zero the uneven showcase padding. */
 body.appwrap {
-  --surface: #080808;
-  --raised: #101010;
-  --glass: rgba(8, 8, 8, 0.94);
   padding: 0 !important;
   font-family: var(--f-ui);
   color: var(--primary);
@@ -500,8 +497,8 @@ body.appwrap .tr-action {
   --raised: #FFFFFF;
   --line: #E0E0E0;
   --line-2: #CFCFCF;
-  --muted: #8C8C8C;
-  --secondary: #5A5A5A;
+  --muted: #9A9A9A;
+  --secondary: #585A5A;
   --primary: #1C1C1C;
   --display: #000000;
   --glass: rgba(255, 255, 255, 0.9);

@@ -57,9 +57,9 @@ function detectPathAccent(): string | null {
 }
 
 const PATH_ACCENT = detectPathAccent()
-const ACCENT = PATH_ACCENT || '#ff0000'
-const ACCENT_TEXT = PATH_ACCENT || '#ff3333'
-const ACCENT_INK = '#ffffff'
+const ACCENT = PATH_ACCENT || '#D71921'
+const ACCENT_TEXT = PATH_ACCENT || '#FF4438'
+const ACCENT_INK = '#FFFFFF'
 
 const FONT_CSS = `
 @font-face {
