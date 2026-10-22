@@ -6,6 +6,10 @@
 
 /* The Nothing UI tokens are scoped to .appwrap; we keep it but zero the uneven showcase padding. */
 body.appwrap {
+  /* Nothing palette: #171717 is the fill for UI elements (surfaces, raised bits, panels) */
+  --surface: #171717;
+  --raised: #171717;
+  --glass: rgba(23, 23, 23, 0.92);
   padding: 0 !important;
   font-family: var(--f-ui);
   color: var(--primary);
@@ -744,7 +748,7 @@ body.appwrap button.tr-action:hover {
 #tr-redesign-root .chip {
   justify-content: center !important;
   padding: 5px 11px !important;
-  background: var(--line-2) !important;
+  background: var(--surface) !important;
   transition-duration: 0.1s !important;
 }
 
