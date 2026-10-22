@@ -179,21 +179,29 @@ function mount() {
   )
 }
 
-const loader = document.createElement('div')
-loader.className = 'tr-redesign-loading'
-loader.textContent = 'Loading redesign…'
-document.body.appendChild(loader)
-document.body.className = 'appwrap'
+// Unclaimed paths serve a bare "There's no page here." stub with no __SITE
+// global — leave it alone. Real request pages (incl. tricipital.com) always
+// have either __SITE or a real app body.
+const __site = (window as { __SITE?: { name?: string } }).__SITE
+const unclaimed = !__site?.name && (document.body.textContent || '').trim().startsWith("There's no page here")
 
-stripForeignStyles()
-watchForeignStyles()
+if (!unclaimed) {
+  const loader = document.createElement('div')
+  loader.className = 'tr-redesign-loading'
+  loader.textContent = 'Loading redesign…'
+  document.body.appendChild(loader)
+  document.body.className = 'appwrap'
 
-loadCss(NOTHING_CSS)
-  .then(() => {
-    injectFontStyle()
-    return loadFonts()
-  })
-  .then(() => mount())
-  .catch(() => {
-    loader.textContent = 'Design system/fonts failed to load. Refresh to try again.'
-  })
+  stripForeignStyles()
+  watchForeignStyles()
+
+  loadCss(NOTHING_CSS)
+    .then(() => {
+      injectFontStyle()
+      return loadFonts()
+    })
+    .then(() => mount())
+    .catch(() => {
+      loader.textContent = 'Design system/fonts failed to load. Refresh to try again.'
+    })
+}
