@@ -179,11 +179,14 @@ function mount() {
   )
 }
 
-// Unclaimed paths serve a bare "There's no page here." stub with no __SITE
-// global — leave it alone. Real request pages (incl. tricipital.com) always
-// have either __SITE or a real app body.
+// Unclaimed paths 404 with either a bare "There's no page here." text stub or
+// a small HTML page titled "There's no page here · levelrequest" — neither has
+// the __SITE global real request pages set. Leave them alone.
 const __site = (window as { __SITE?: { name?: string } }).__SITE
-const unclaimed = !__site?.name && (document.body.textContent || '').trim().startsWith("There's no page here")
+const unclaimed = !__site?.name && (
+  document.title.toLowerCase().includes('no page here') ||
+  (document.body?.textContent || '').trim().startsWith("There's no page here")
+)
 
 if (!unclaimed) {
   const loader = document.createElement('div')
